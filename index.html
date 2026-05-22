@@ -15,15 +15,23 @@
   --preto:    #231F20;
   --offwhite: #F7F6EE;
   --branco:   #FFFFFF;
+  --content-max: 960px;
+  --pad-x: max(1.5rem, calc((100% - var(--content-max)) / 2));
+}
+@media (min-width: 1200px) {
+  :root {
+    --content-max: 1100px;
+    --pad-x: max(3rem, calc((100% - var(--content-max)) / 2));
+  }
 }
 html { font-size: 16px; }
 body { background: var(--offwhite); color: var(--preto); font-family: 'Montserrat', sans-serif; font-weight: 400; -webkit-font-smoothing: antialiased; }
-.page { max-width: 480px; margin: 0 auto; }
+.page { max-width: 100%; margin: 0; }
 
 /* ── HEADER ── */
 .header {
   background: var(--coral);
-  padding: 1.5rem 1.5rem 1.75rem;
+  padding: 1.5rem var(--pad-x) 1.75rem;
   position: relative; overflow: hidden;
 }
 .logo-bar {
@@ -51,15 +59,47 @@ body { background: var(--offwhite); color: var(--preto); font-family: 'Montserra
 .gc-o1 { width: 36px; height: 36px; border: 1.5px solid rgba(247,246,238,0.45); position: absolute; top: 32px; right: 4px; }
 
 /* ── HERO ── */
-.hero { background: var(--coral); padding: 0 1.5rem 2.5rem; }
+.hero {
+  background: var(--coral);
+  padding: 0 var(--pad-x) 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+.hero-copy { min-width: 0; }
+.hero-form-col { min-width: 0; }
 .hero-headline {
-  font-size: 30px; font-weight: 900; letter-spacing: -1px;
+  font-size: clamp(26px, 5vw, 36px); font-weight: 900; letter-spacing: -1px;
   line-height: 1.12; color: var(--offwhite); margin-bottom: 1rem;
 }
 .hero-headline em { color: var(--neon); font-style: normal; }
 .hero-sub {
-  font-size: 14px; font-weight: 300; line-height: 1.7;
-  color: rgba(247,246,238,0.8); margin-bottom: 2rem;
+  font-size: clamp(13px, 2vw, 15px); font-weight: 300; line-height: 1.7;
+  color: rgba(247,246,238,0.8); margin-bottom: 0;
+}
+.hero-mini-proof {
+  display: none;
+  margin-top: 1rem;
+  padding: 0.85rem 0 0.85rem 1rem;
+  border-left: 2px solid rgba(247,246,238,0.35);
+}
+.hero-mini-proof-quote {
+  font-size: 12px; font-weight: 300; line-height: 1.65;
+  color: rgba(247,246,238,0.88); margin-bottom: 6px;
+}
+.hero-mini-proof-who {
+  font-size: 10px; font-weight: 700; color: var(--neon);
+}
+@media (min-width: 769px) {
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem 2.5rem;
+    align-items: start;
+    padding-top: 0.5rem;
+    padding-bottom: 2.5rem;
+  }
+  .hero-mini-proof { display: block; }
 }
 
 /* ── FORM CARD ── */
@@ -73,6 +113,9 @@ body { background: var(--offwhite); color: var(--preto); font-family: 'Montserra
 }
 .form-group { margin-bottom: 1rem; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+@media (max-width: 520px) {
+  .form-row { grid-template-columns: 1fr; }
+}
 label {
   display: block; font-size: 10px; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.1em;
@@ -110,13 +153,13 @@ select option { background: #fff; color: #231F20; }
 .error-msg { font-size: 12px; color: var(--coral); margin-top: 8px; display: none; }
 
 /* ── ANCHOR BLOCK ── */
-.anchor-block { background: var(--preto); padding: 2rem 1.5rem; }
+.anchor-block { background: var(--preto); padding: 2rem var(--pad-x); }
 .anchor-eyebrow {
   font-size: 10px; font-weight: 400; letter-spacing: 0.16em;
   text-transform: uppercase; color: rgba(247,246,238,0.4); margin-bottom: 1rem;
 }
 .anchor-headline {
-  font-size: 22px; font-weight: 900; letter-spacing: -0.5px;
+  font-size: clamp(20px, 4vw, 28px); font-weight: 900; letter-spacing: -0.5px;
   color: var(--offwhite); line-height: 1.2; margin-bottom: 1.75rem;
 }
 .anchor-headline em { color: var(--neon); font-style: normal; }
@@ -133,33 +176,48 @@ select option { background: #fff; color: #231F20; }
   padding: 12px 0; border-bottom: 2px solid rgba(247,246,238,0.15); margin-bottom: 1.25rem;
 }
 .value-total-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(247,246,238,0.4); }
-.value-total-num { font-size: 18px; font-weight: 900; letter-spacing: -0.5px; color: rgba(247,246,238,0.3); text-decoration: line-through; }
-.price-reveal { text-align: left; }
-.price-reveal-label { font-size: 12px; font-weight: 400; color: rgba(247,246,238,0.5); margin-bottom: 4px; }
-.price-reveal-value { font-size: 42px; font-weight: 900; letter-spacing: -2px; color: var(--neon); line-height: 1; }
-.price-reveal-sub { font-size: 12px; font-weight: 300; color: rgba(247,246,238,0.4); margin-top: 4px; }
+.value-total-num {
+  font-size: 28px; font-weight: 900; letter-spacing: -0.5px;
+  color: rgba(247,246,238,0.82);
+  text-decoration: line-through;
+  text-decoration-color: var(--coral);
+  text-decoration-thickness: 3px;
+}
 .anchor-comparison {
   background: rgba(247,246,238,0.05); border-left: 2px solid rgba(247,246,238,0.15);
-  padding: 0.75rem 1rem; margin-top: 1.25rem;
+  padding: 0.75rem 1rem; margin-bottom: 1.25rem;
 }
 .anchor-comparison p { font-size: 11px; font-weight: 300; color: rgba(247,246,238,0.45); line-height: 1.7; }
 .anchor-comparison strong { color: rgba(247,246,238,0.7); font-weight: 700; }
+.price-reveal { text-align: left; margin-bottom: 1.25rem; }
+.anchor-roi {
+  background: rgba(215,244,68,0.08); border-left: 3px solid var(--neon);
+  padding: 0.85rem 1rem;
+}
+.anchor-roi p {
+  font-size: 12px; font-weight: 400; line-height: 1.7;
+  color: rgba(247,246,238,0.75);
+}
+.anchor-roi strong { color: var(--neon); font-weight: 700; }
+.price-reveal-label { font-size: 12px; font-weight: 400; color: rgba(247,246,238,0.5); margin-bottom: 4px; }
+.price-reveal-value { font-size: clamp(34px, 6vw, 48px); font-weight: 900; letter-spacing: -2px; color: var(--neon); line-height: 1; }
+.price-reveal-sub { font-size: 12px; font-weight: 300; color: rgba(247,246,238,0.4); margin-top: 4px; }
 
 /* ── SECTIONS ── */
-.section { padding: 2rem 1.5rem; }
+.section { padding: 2rem var(--pad-x); }
 .section-kicker {
   font-size: 10px; font-weight: 700; text-transform: uppercase;
   letter-spacing: 0.14em; color: rgba(35,31,32,0.35); margin-bottom: 0.75rem;
 }
 .section-headline {
-  font-size: 22px; font-weight: 900; letter-spacing: -0.5px;
+  font-size: clamp(20px, 4vw, 26px); font-weight: 900; letter-spacing: -0.5px;
   line-height: 1.2; color: var(--preto); margin-bottom: 0.75rem;
 }
 .section-headline em { color: var(--coral); font-style: normal; }
 .section-body { font-size: 13px; font-weight: 300; color: rgba(35,31,32,0.6); line-height: 1.75; margin-bottom: 1.5rem; }
 
 /* ── SOCIAL PROOF ── */
-.proof-section { background: var(--coral); padding: 2rem 1.5rem; }
+.proof-section { background: var(--coral); padding: 2rem var(--pad-x); }
 .proof-kicker { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: rgba(247,246,238,0.5); margin-bottom: 1rem; }
 .proof-headline { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; color: var(--offwhite); line-height: 1.2; margin-bottom: 1.5rem; }
 .proof-card {
@@ -170,7 +228,7 @@ select option { background: #fff; color: #231F20; }
 .proof-who { font-size: 11px; font-weight: 700; color: var(--neon); }
 
 /* ── BONUS SECTION ── */
-.bonus-section { padding: 2rem 1.5rem; }
+.bonus-section { padding: 2rem var(--pad-x); }
 .bonus-list { border-top: 2px solid var(--preto); }
 .bonus-item {
   display: flex; align-items: flex-start; gap: 12px;
@@ -189,7 +247,7 @@ select option { background: #fff; color: #231F20; }
 }
 
 /* ── BOTTOM FORM ── */
-.bottom-form-section { padding: 0 1.5rem 2.5rem; }
+.bottom-form-section { padding: 0 var(--pad-x) 2.5rem; }
 .bottom-form-headline { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; color: var(--preto); margin-bottom: 0.5rem; }
 .bottom-form-sub { font-size: 13px; font-weight: 300; color: rgba(35,31,32,0.55); line-height: 1.65; margin-bottom: 1.25rem; }
 .declaration {
@@ -244,7 +302,7 @@ select option { background: #fff; color: #231F20; }
 }
 
 /* ── SUCCESS ── */
-.success-state { display: none; padding: 3rem 1.5rem; }
+.success-state { display: none; padding: 3rem var(--pad-x); }
 .success-check { width: 44px; height: 44px; background: var(--coral); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; }
 .success-check svg { width: 22px; height: 22px; }
 .success-title { font-size: 26px; font-weight: 900; letter-spacing: -0.75px; color: var(--preto); margin-bottom: 0.5rem; }
@@ -252,13 +310,13 @@ select option { background: #fff; color: #231F20; }
 .success-msg   { font-size: 13px; font-weight: 300; color: rgba(35,31,32,0.55); line-height: 1.75; }
 
 /* ── FOOTER ── */
-.footer { border-top: 1px solid rgba(35,31,32,0.1); padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+.footer { border-top: 1px solid rgba(35,31,32,0.1); padding: 1.25rem var(--pad-x); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }
 .footer-brand { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(35,31,32,0.22); }
 .footer-geo { display: flex; gap: 3px; align-items: flex-end; }
 .fg-a { width: 10px; height: 10px; background: var(--coral); }
 .fg-b { width: 7px; height: 7px; background: var(--neon); }
 .fg-c { width: 8px; height: 8px; border: 1.5px solid rgba(35,31,32,0.18); }
-.divider { height: 1px; background: rgba(35,31,32,0.1); margin: 0 1.5rem; }
+.divider { height: 1px; background: rgba(35,31,32,0.1); margin: 0 var(--pad-x); }
 
 /* ── BOTÃO WHATSAPP ── */
 .wa-float {
@@ -366,14 +424,16 @@ try {
 
   <!-- HERO -->
   <section class="hero">
-    <h1 class="hero-headline">
-      Chegue no próximo evento<br>com a agenda <em>já fechada.</em>
-    </h1>
-    <p class="hero-sub">
-      O MEDIA.ON é a primeira plataforma de mídia B2B do Brasil construída sobre público físico validado. 500 mil compradores reais. Ativados o ano inteiro. Para a sua marca falar com quem de fato decide: antes, durante e depois do evento.
-    </p>
+    <div class="hero-copy">
+      <h1 class="hero-headline">
+        Chegue no próximo evento<br>com a agenda <em>já fechada.</em>
+      </h1>
+      <p class="hero-sub">
+        O MEDIA.ON é a primeira plataforma de mídia B2B do Brasil construída sobre público físico validado. 500 mil compradores reais. Ativados o ano inteiro. Para a sua marca falar com quem de fato decide: antes, durante e depois do evento.
+      </p>
+    </div>
 
-    <!-- FORM 1 -->
+    <div class="hero-form-col">
     <div class="form-card">
       <p class="form-card-title">Reserve a oferta de lançamento</p>
       <div class="form-group">
@@ -415,6 +475,11 @@ try {
       <button class="cta-btn" onclick="handleSubmit('hero')">Garantir reserva →</button>
       <p class="error-msg" id="hero-err"></p>
       <p class="form-note">Preencher o formulário não é fechar o contrato. É garantir a oferta de lançamento enquanto você ainda tem acesso a ela.</p>
+    </div>
+    <div class="hero-mini-proof">
+      <p class="hero-mini-proof-quote">"Usamos o FitScore para convidar compradores para um evento próprio antes do evento. Cerca de 85% dos maiores compradores de refeições coletivas do Brasil compareceram. Chegamos no evento com as conversas já iniciadas."</p>
+      <p class="hero-mini-proof-who">Carol, American Seafoods</p>
+    </div>
     </div>
   </section>
 
@@ -462,13 +527,16 @@ try {
       <span class="value-total-label">Valor total</span>
       <span class="value-total-num">R$ 292.000+</span>
     </div>
+    <div class="anchor-comparison">
+      <p>Para impactar 600.000 pessoas no LinkedIn você gastaria <strong>R$ 140.600</strong> só em mídia, gestão e produção, sem nenhuma garantia de que o público é comprador do seu setor.</p>
+    </div>
     <div class="price-reveal">
       <p class="price-reveal-label">Reservando hoje você garante a oferta</p>
       <p class="price-reveal-value">12× R$ 5.000</p>
       <p class="price-reveal-sub">R$ 60.000 por ano</p>
     </div>
-    <div class="anchor-comparison">
-      <p>Para impactar 600.000 pessoas no LinkedIn você gastaria <strong>R$ 140.600</strong> só em mídia, gestão e produção, sem nenhuma garantia de que o público é comprador do seu setor.</p>
+    <div class="anchor-roi">
+      <p>Com ticket médio de <strong>R$ 80 mil</strong>, menos de um contrato já paga o investimento de R$ 60 mil no ano. Quatro contratos no patamar do roteiro representam <strong>R$ 320 mil</strong> gerados — o resto é resultado.</p>
     </div>
   </section>
 
@@ -882,7 +950,7 @@ function handleSubmit(source) {
   }
   err.style.display = 'none';
   btn = source === 'hero'
-    ? document.querySelector('.hero .cta-btn')
+    ? document.querySelector('.hero-form-col .cta-btn')
     : document.querySelector('.bottom-form-section .cta-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
   postWebhook(WEBHOOK_FORM, {
@@ -896,7 +964,7 @@ function handleSubmit(source) {
     page_url: window.location.href
   }).then(function() {
     document.getElementById('main-content').style.display = 'none';
-    document.querySelector('.hero .form-card').style.display = 'none';
+    document.querySelector('.hero-form-col').style.display = 'none';
     document.getElementById('success-name').textContent = nome + ': ' + empresa;
     document.getElementById('success-state').style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
