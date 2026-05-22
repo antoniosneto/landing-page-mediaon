@@ -287,17 +287,6 @@ select option { background: #fff; color: #231F20; }
 .bottom-cta-section { padding: 2.5rem var(--pad-x); text-align: left; }
 .bottom-cta-section .bottom-form-headline { margin-bottom: 1.25rem; }
 .bottom-cta-section .cta-btn { max-width: 28rem; }
-.declaration {
-  background: rgba(243,92,85,0.07); border-left: 3px solid var(--coral);
-  padding: 1rem 1.1rem; margin-top: 1.25rem;
-}
-.declaration-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--coral); margin-bottom: 0.75rem; }
-.declaration p { font-size: 11px; font-weight: 300; color: rgba(35,31,32,0.6); line-height: 1.75; margin-bottom: 0.5rem; }
-.declaration p:last-child { margin-bottom: 0; }
-.confirm-row { display: flex; align-items: flex-start; gap: 12px; margin-top: 1.25rem; }
-.confirm-row input[type="checkbox"] { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; accent-color: var(--coral); cursor: pointer; }
-.confirm-row label { font-size: 13px; font-weight: 400; text-transform: none; letter-spacing: 0; color: rgba(35,31,32,0.75); line-height: 1.65; cursor: pointer; margin-bottom: 0; }
-
 /* ── OPÇÕES (CHECKBOX / RADIO) ── */
 .choice-group {
   border: none; margin: 1.25rem 0 0; padding: 0;
@@ -513,15 +502,6 @@ try {
           <span class="choice-text">Quero garantir a oferta, mas preciso de aprovação.</span>
         </label>
       </fieldset>
-      <div class="declaration">
-        <p class="declaration-title">Ao preencher este formulário, declaro que:</p>
-        <p>1. O preenchimento do formulário não representa fechamento de contrato. É a garantia da oferta de lançamento apresentada no Kickoff MEDIA.ON 2026.</p>
-        <p>2. A oferta de lançamento (12× R$ 5.000) é válida exclusivamente para reservas realizadas durante o evento.</p>
-      </div>
-      <div class="confirm-row">
-        <input type="checkbox" id="h-confirm" />
-        <label for="h-confirm">Li e concordo com as condições. Desejo garantir minha reserva na oferta de lançamento da MEDIA.ON.</label>
-      </div>
       <button class="cta-btn" onclick="handleSubmit()">Garantir reserva →</button>
       <p class="error-msg" id="hero-err"></p>
       <p class="form-note">Preencher o formulário não é fechar o contrato. É garantir a oferta de lançamento enquanto você ainda tem acesso a ela.</p>
@@ -920,8 +900,6 @@ function handleSubmit() {
   var tel = getVal('h-tel');
   var email = getVal('h-email');
   var intencao = getIntencao('h-intencao');
-  var confirmEl = document.getElementById('h-confirm');
-  var confirm = confirmEl ? confirmEl.checked : false;
   var err = document.getElementById('hero-err');
   var telEl = document.getElementById('h-tel');
   var intencaoGroupId = 'h-intencao-group';
@@ -946,10 +924,6 @@ function handleSubmit() {
   }
   tel = formatWhatsApp(tel);
   if (telEl) { telEl.value = tel; telEl.classList.remove('input-invalid'); }
-  if (!confirm) {
-    err.textContent = 'Confirme que leu e concorda com as condições para garantir a reserva.';
-    err.style.display = 'block'; return;
-  }
   err.style.display = 'none';
   if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
   postWebhook(WEBHOOK_FORM, {
