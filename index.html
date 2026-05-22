@@ -664,6 +664,19 @@ function postWebhook(url, payload) {
 }
 
 function getVal(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function setVal(id, value) {
+  var el = document.getElementById(id);
+  if (el) el.value = value;
+}
+function prefillFormsFromGate(nome, tel) {
+  ['h-nome', 'b-nome'].forEach(function(id) { setVal(id, nome); });
+  ['h-tel', 'b-tel'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.value = tel;
+    el.classList.remove('input-invalid');
+  });
+}
 function getIntencao(name) {
   var el = document.querySelector('input[name="' + name + '"]:checked');
   return el ? el.value : '';
@@ -748,6 +761,7 @@ function handleGateSubmit() {
     submitted_at: new Date().toISOString(),
     page_url: window.location.href
   }).then(function() {
+    prefillFormsFromGate(nome, tel);
     unlockPage();
   }).catch(function() {
     err.textContent = 'Não foi possível registrar seu acesso. Verifique a conexão e tente novamente.';
