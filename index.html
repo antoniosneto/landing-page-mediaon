@@ -632,19 +632,35 @@ body.gate-active #page-content {
 
 <script>
 // Substituir pelo WhatsApp oficial (DDI 55 + DDD + número, somente dígitos)
-var WA_NUMBER = '5511999999999';
+var WA_NUMBER = '5531984560889';
 var WA_MESSAGE = 'Olá! Vim pela página de reserva prioritária do MEDIA.ON e gostaria de mais informações.';
 var WHATSAPP_ERR = 'Informe um WhatsApp válido com DDD e 9 dígitos, no formato (11) 99999-9999.';
 var WEBHOOK_GATE = 'https://hook.us2.make.com/jle858kfrqmewsxshjzxwnl3b4l5gaq1';
 var WEBHOOK_FORM = 'https://hook.us2.make.com/72d4g0xdo2anyhg931mgsiqev9dzhrqp';
 
+function buildWebhookBody(payload) {
+  var body = new URLSearchParams();
+  Object.keys(payload).forEach(function(key) {
+    var value = payload[key];
+    if (value != null && value !== '') body.append(key, String(value));
+  });
+  return body;
+}
+
 function postWebhook(url, payload) {
+  var body = buildWebhookBody(payload);
+  var bodyStr = body.toString();
   return fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: bodyStr,
     keepalive: true
-  }).catch(function() {});
+  }).then(function(res) {
+    if (res.ok) return res;
+    throw new Error('HTTP ' + res.status);
+  }).catch(function() {
+    return fetch(url + '?' + bodyStr, { method: 'GET', keepalive: true });
+  });
 }
 
 function getVal(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
@@ -709,6 +725,7 @@ function handleGateSubmit() {
   var tel = getVal('gate-tel');
   var err = document.getElementById('gate-err');
   var telEl = document.getElementById('gate-tel');
+  var btn = document.querySelector('#gate-form .cta-btn');
   if (!nome || !tel) {
     err.textContent = 'Preencha seu nome e WhatsApp para continuar.';
     err.style.display = 'block';
@@ -723,14 +740,20 @@ function handleGateSubmit() {
   tel = formatWhatsApp(tel);
   if (telEl) { telEl.value = tel; telEl.classList.remove('input-invalid'); }
   err.style.display = 'none';
+  if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
   postWebhook(WEBHOOK_GATE, {
     nome: nome,
     tel: tel,
     source: 'gate',
     submitted_at: new Date().toISOString(),
     page_url: window.location.href
+  }).then(function() {
+    unlockPage();
+  }).catch(function() {
+    err.textContent = 'Não foi possível registrar seu acesso. Verifique a conexão e tente novamente.';
+    err.style.display = 'block';
+    if (btn) { btn.disabled = false; btn.textContent = 'Acessar oferta'; }
   });
-  unlockPage();
 }
 
 function lockPage() {
@@ -764,7 +787,7 @@ function initWhatsAppInputs() {
 }
 
 function handleSubmit(source) {
-  var nome, empresa, tel, email, intencao, confirm, errId, telId, intencaoGroupId, intencaoName;
+  var nome, empresa, tel, email, intencao, confirm, errId, telId, intencaoGroupId, intencaoName, btn;
   if (source === 'hero') {
     nome = getVal('h-nome'); empresa = getVal('h-empresa');
     tel = getVal('h-tel'); email = getVal('h-email');
@@ -804,6 +827,10 @@ function handleSubmit(source) {
     err.style.display = 'block'; return;
   }
   err.style.display = 'none';
+  btn = source === 'hero'
+    ? document.querySelector('.hero .cta-btn')
+    : document.querySelector('.bottom-form-section .cta-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
   postWebhook(WEBHOOK_FORM, {
     nome: nome,
     empresa: empresa,
@@ -813,12 +840,17 @@ function handleSubmit(source) {
     source: source,
     submitted_at: new Date().toISOString(),
     page_url: window.location.href
+  }).then(function() {
+    document.getElementById('main-content').style.display = 'none';
+    document.querySelector('.hero .form-card').style.display = 'none';
+    document.getElementById('success-name').textContent = nome + ': ' + empresa;
+    document.getElementById('success-state').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }).catch(function() {
+    err.textContent = 'Não foi possível enviar sua reserva. Verifique a conexão e tente novamente.';
+    err.style.display = 'block';
+    if (btn) { btn.disabled = false; btn.textContent = 'Garanta sua reserva →'; }
   });
-  document.getElementById('main-content').style.display = 'none';
-  document.querySelector('.hero .form-card').style.display = 'none';
-  document.getElementById('success-name').textContent = nome + ': ' + empresa;
-  document.getElementById('success-state').style.display = 'block';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 document.getElementById('gate-form').addEventListener('submit', function(e) {
   e.preventDefault();
