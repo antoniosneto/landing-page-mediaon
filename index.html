@@ -280,6 +280,13 @@ body.gate-active #page-content {
   pointer-events: none;
   user-select: none;
 }
+html.gate-skipped body.gate-active #page-content {
+  pointer-events: auto;
+  user-select: auto;
+}
+html.gate-skipped body.gate-active .wa-float { display: flex; }
+html.gate-skipped body.gate-active { overflow: auto; }
+html.gate-skipped #access-gate { display: none !important; }
 .access-gate {
   position: fixed; inset: 0; z-index: 1000;
   display: flex; align-items: center; justify-content: center;
@@ -310,6 +317,13 @@ body.gate-active #page-content {
 .access-gate .form-group:last-of-type { margin-bottom: 0; }
 .access-gate .cta-btn { margin-top: 1rem; }
 </style>
+<script>
+try {
+  if (localStorage.getItem('mediaon_gate_done')) {
+    document.documentElement.classList.add('gate-skipped');
+  }
+} catch (e) {}
+</script>
 </head>
 <body class="gate-active">
 
@@ -395,10 +409,10 @@ body.gate-active #page-content {
         <label class="choice-row">
           <input type="radio" name="h-intencao" value="aprovacao" />
           <span class="choice-box" aria-hidden="true"></span>
-          <span class="choice-text">Não sou o decisor e preciso de aprovação.</span>
+          <span class="choice-text">Quero garantir a oferta, mas preciso de aprovação.</span>
         </label>
       </fieldset>
-      <button class="cta-btn" onclick="handleSubmit('hero')">Garanta sua reserva →</button>
+      <button class="cta-btn" onclick="handleSubmit('hero')">Garantir reserva →</button>
       <p class="error-msg" id="hero-err"></p>
       <p class="form-note">Preencher o formulário não é fechar o contrato. É garantir a oferta de lançamento enquanto você ainda tem acesso a ela.</p>
     </div>
@@ -597,7 +611,7 @@ body.gate-active #page-content {
         <input type="checkbox" id="b-confirm" />
         <label for="b-confirm">Li e concordo com as condições. Desejo garantir minha reserva na oferta de lançamento da MEDIA.ON.</label>
       </div>
-      <button class="cta-btn" onclick="handleSubmit('bottom')">Garanta sua reserva →</button>
+      <button class="cta-btn" onclick="handleSubmit('bottom')">Garantir reserva →</button>
       <p class="error-msg" id="bottom-err"></p>
     </div>
   </section>
@@ -637,6 +651,25 @@ var WA_MESSAGE = 'Olá! Vim pela página de reserva prioritária do MEDIA.ON e g
 var WHATSAPP_ERR = 'Informe um WhatsApp válido com DDD e 9 dígitos, no formato (11) 99999-9999.';
 var WEBHOOK_GATE = 'https://hook.us2.make.com/jle858kfrqmewsxshjzxwnl3b4l5gaq1';
 var WEBHOOK_FORM = 'https://hook.us2.make.com/72d4g0xdo2anyhg931mgsiqev9dzhrqp';
+var GATE_STORAGE_KEY = 'mediaon_gate_done';
+
+function saveGateData(nome, tel) {
+  try {
+    localStorage.setItem(GATE_STORAGE_KEY, JSON.stringify({ nome: nome, tel: tel }));
+  } catch (e) {}
+}
+
+function loadGateData() {
+  try {
+    var raw = localStorage.getItem(GATE_STORAGE_KEY);
+    if (!raw) return null;
+    var data = JSON.parse(raw);
+    if (!data || !data.nome || !data.tel) return null;
+    return data;
+  } catch (e) {
+    return null;
+  }
+}
 
 function buildWebhookBody(payload) {
   var body = new URLSearchParams();
@@ -761,6 +794,7 @@ function handleGateSubmit() {
     submitted_at: new Date().toISOString(),
     page_url: window.location.href
   }).then(function() {
+    saveGateData(nome, tel);
     prefillFormsFromGate(nome, tel);
     unlockPage();
   }).catch(function() {
@@ -780,6 +814,12 @@ function lockPage() {
 }
 
 function initAccessGate() {
+  var saved = loadGateData();
+  if (saved) {
+    prefillFormsFromGate(saved.nome, saved.tel);
+    unlockPage();
+    return;
+  }
   lockPage();
   var nomeEl = document.getElementById('gate-nome');
   if (nomeEl) nomeEl.focus();
@@ -863,7 +903,7 @@ function handleSubmit(source) {
   }).catch(function() {
     err.textContent = 'Não foi possível enviar sua reserva. Verifique a conexão e tente novamente.';
     err.style.display = 'block';
-    if (btn) { btn.disabled = false; btn.textContent = 'Garanta sua reserva →'; }
+    if (btn) { btn.disabled = false; btn.textContent = 'Garantir reserva →'; }
   });
 }
 document.getElementById('gate-form').addEventListener('submit', function(e) {
