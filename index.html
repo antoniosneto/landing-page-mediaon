@@ -66,7 +66,11 @@ body { background: var(--offwhite); color: var(--preto); font-family: 'Montserra
   flex-direction: column;
   gap: 1.75rem;
 }
-.hero-copy { min-width: 0; }
+.hero-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
 .hero-form-col { min-width: 0; }
 .hero-headline {
   font-size: clamp(26px, 5vw, 36px); font-weight: 900; letter-spacing: -1px;
@@ -78,28 +82,32 @@ body { background: var(--offwhite); color: var(--preto); font-family: 'Montserra
   color: rgba(247,246,238,0.8); margin-bottom: 0;
 }
 .hero-mini-proof {
-  display: none;
-  margin-top: 1rem;
+  margin-top: 1.25rem;
   padding: 0.85rem 0 0.85rem 1rem;
-  border-left: 2px solid rgba(247,246,238,0.35);
+  border-left: 2px solid var(--neon);
 }
 .hero-mini-proof-quote {
-  font-size: 12px; font-weight: 300; line-height: 1.65;
-  color: rgba(247,246,238,0.88); margin-bottom: 6px;
+  font-size: 13px; font-weight: 300; line-height: 1.65;
+  color: rgba(247,246,238,0.9); margin-bottom: 8px;
 }
 .hero-mini-proof-who {
-  font-size: 10px; font-weight: 700; color: var(--neon);
+  font-size: 11px; font-weight: 700; color: var(--neon);
 }
 @media (min-width: 769px) {
   .hero {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem 2.5rem;
-    align-items: start;
+    align-items: stretch;
     padding-top: 0.5rem;
     padding-bottom: 2.5rem;
   }
-  .hero-mini-proof { display: block; }
+  .hero-mini-proof {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    max-width: 36rem;
+  }
+  .hero-mini-proof-quote { font-size: 14px; }
 }
 
 /* ── FORM CARD ── */
@@ -431,6 +439,10 @@ try {
       <p class="hero-sub">
         O MEDIA.ON é a primeira plataforma de mídia B2B do Brasil construída sobre público físico validado. 500 mil compradores reais. Ativados o ano inteiro. Para a sua marca falar com quem de fato decide: antes, durante e depois do evento.
       </p>
+      <div class="hero-mini-proof">
+        <p class="hero-mini-proof-quote">"Usamos o FitScore para convidar compradores para um evento próprio antes do evento. Cerca de 85% dos maiores compradores de refeições coletivas do Brasil compareceram. Chegamos no evento com as conversas já iniciadas."</p>
+        <p class="hero-mini-proof-who">Carol, American Seafoods</p>
+      </div>
     </div>
 
     <div class="hero-form-col">
@@ -475,10 +487,6 @@ try {
       <button class="cta-btn" onclick="handleSubmit('hero')">Garantir reserva →</button>
       <p class="error-msg" id="hero-err"></p>
       <p class="form-note">Preencher o formulário não é fechar o contrato. É garantir a oferta de lançamento enquanto você ainda tem acesso a ela.</p>
-    </div>
-    <div class="hero-mini-proof">
-      <p class="hero-mini-proof-quote">"Usamos o FitScore para convidar compradores para um evento próprio antes do evento. Cerca de 85% dos maiores compradores de refeições coletivas do Brasil compareceram. Chegamos no evento com as conversas já iniciadas."</p>
-      <p class="hero-mini-proof-who">Carol, American Seafoods</p>
     </div>
     </div>
   </section>
